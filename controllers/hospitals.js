@@ -1,11 +1,18 @@
 const Hospital = require("../models/Hospital.js");
+const School = require("../models/School");
 //@desc Get all hospitals
 //@route GET /api/v1/hospitalss
 //@access Publice
 
 exports.getHospitals = async (req, res, next) => {
+      console.log(req.query);
+      let query;
+      let queryStr = JSON.stringify(req.query);
+      queryStr=queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g,match=>`$${match}`);
+      query = Hospital.find(JSON.parse(queryStr));
   try {
-    const hospitals = await Hospital.find();
+    const hospitals = await query;
+    console.log(req.query);
     res
       .status(200)
       .json({ success: true, count: hospitals.length, data: hospitals });
