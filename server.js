@@ -7,6 +7,8 @@ const helmet = require('helmet');
 const xss= require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUI = require('swagger-ui-express');
 //load env vars
 dotenv.config({path:'./config/config.env'});
 
@@ -19,6 +21,27 @@ const appointments = require('./routes/appointments');
 const auth= require ('./routes/auth');
 
 
+const swaggerOptions={
+    swaggerDefinition:{
+        openapi: '3.0.0',
+        info: {
+            title: 'Library API',
+            version: '1.0.0',
+            description: 'A simple Express VacQ API'
+        },
+        servers:[
+            {
+                url: 'http://localhost:4500/api/v1'
+            }
+        ],
+    },
+    apis:['./routes/*.js'],
+};
+const swaggerDocs=swaggerJsDoc(swaggerOptions);
+app.use('/api-docs',swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+
+
+app.use(express.json());
 //Cookie parser
 app.use(cookieParser());
 
@@ -41,7 +64,6 @@ app.use(limiter);
 //Prevent htpp param pollutions
 app.use(hpp());
 //Body parser
-app.use(express.json());
 app.use('/api/v1/hospitals',hospitals);
 app.use('/api/v1/auth',auth);
 app.use('/api/v1/appointments', appointments);

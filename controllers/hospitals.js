@@ -76,7 +76,7 @@ exports.getHospitals = async (req, res, next) => {
 
 exports.getHospital = async (req, res, next) => {
   try {
-    const hospital = await Hospital.findById(req.params.id);
+    const hospital = await Hospital.findById(req.params.id).populate("appointments");
     if (!hospital) {
       return res.status(400).json({ success: false });
     }

@@ -31,6 +31,7 @@ exports.register = async(req,res,next)=>{
 //@access Public
 exports.login= async (req,res,next)=>{
     const {email,password} = req.body;
+    try{
     //validate email & password
     if(!email || !password){
         return res.status(400).json({success:false,msg:'Please provide an email and password'});
@@ -53,6 +54,9 @@ exports.login= async (req,res,next)=>{
     // const token = user.getSignedJwtToken();
     // res.status(200).json({success:true,token});
     sendTokenResponse(user,200,res);
+}catch(err){
+    res.status(400).json({error:err})
+}
 }
 
 //Get token from model,create cookie and send response
